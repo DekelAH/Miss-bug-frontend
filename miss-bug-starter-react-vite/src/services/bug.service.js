@@ -1,7 +1,5 @@
 
 import axios from 'axios'
-import { storageService } from './async-storage.service.js'
-import { utilService } from './util.service.js'
 import { showErrorMsg } from './event-bus.service.js'
 
 // const STORAGE_KEY = 'bugDB'
@@ -16,8 +14,8 @@ export const bugService = {
     downloadBugReportPDF
 }
 
-
 function query(filterBy = {}) {
+
     filterBy = { ...filterBy }
     return axios.get(BASE_URL)
         .then(res => res.data)
