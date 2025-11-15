@@ -12,7 +12,9 @@ export function BugIndex() {
 
 
     useEffect(() => {
+
         loadBugs()
+
     }, [filterBy])
 
     async function loadBugs() {
@@ -28,7 +30,7 @@ export function BugIndex() {
         try {
             await bugService.remove(bugId)
             console.log('Deleted Succesfully!')
-            setBugs(prevBugs => prevBugs.filter((bug) => bug._id !== bugId))
+            setBugs(prevBugs => prevBugs.filter(bug => bug._id !== bugId))
             showSuccessMsg('Bug removed')
         } catch (err) {
             console.log('Error from onRemoveBug ->', err)
@@ -43,8 +45,8 @@ export function BugIndex() {
             description: prompt('Bug description?'),
         }
         try {
+            console.log('Added Bug', bug)
             const savedBug = await bugService.save(bug)
-            console.log('Added Bug', savedBug)
             setBugs(prevBugs => [...prevBugs, savedBug])
             showSuccessMsg('Bug added')
         } catch (err) {
@@ -77,7 +79,8 @@ export function BugIndex() {
     }
 
     function onSetFilterBy(filterBy) {
-        setFilterBy(prevFilter => ({ ...prevFilter, ...filterBy }))
+
+        setFilterBy({ ...bugService.getDefaultFilter(), ...filterBy })
     }
 
     return (

@@ -1,9 +1,14 @@
 
-import axios from 'axios'
+import Axios from 'axios'
 import { showErrorMsg } from './event-bus.service.js'
 
 // const STORAGE_KEY = 'bugDB'
 const BASE_URL = 'http://127.0.0.1:3030/api/bug/'
+
+const axios = Axios.create({
+
+    withCredentials: true,
+})
 
 export const bugService = {
     query,
@@ -14,64 +19,85 @@ export const bugService = {
     downloadBugReportPDF
 }
 
-function query(filterBy = {}) {
+async function query(filterBy) {
 
-    filterBy = { ...filterBy }
-    return axios.get(BASE_URL)
-        .then(res => res.data)
-        .then(bugs => {
-            if (!filterBy.txt) filterBy.txt = ''
-            if (!filterBy.severity) filterBy.severity = Infinity
-            const regExp = new RegExp(filterBy.txt, 'i')
-            return bugs.filter(bug =>
-                regExp.test(bug.title) &&
-                bug.severity <= filterBy.severity
-            )
-        })
+    try {
+        const { data: bugs } = await axios.get(BASE_URL, { params: filterBy })
+        return bugs
+    } catch (err) {
+        console.log('err: ', err)
+        throw err
+    }
+
 }
 
-function getById(bugId) {
+async function getById(bugId) {
 
-    return axios.get(BASE_URL + bugId).then(res => res.data)
+    const res = await axios.get(BASE_URL + bugId)
+    return res.data
 }
 
-function remove(bugId) {
+async function remove(bugId) {
 
-    return axios.get(BASE_URL + bugId + '/remove')
+    try {
+        const { data } = await axios.delete(BASE_URL + bugId)
+        return data
+    } catch (err) {
+        console.log(err)
+        throw err
+    }
 }
 
-function save(bug) {
+async function save(bugToSave) {
 
-    return axios.get(BASE_URL + 'save', { params: bug }).then(res => res.data)
+    const url = BASE_URL + (bugToSave._id || '')
+    const method = bugToSave._id ? 'put' : 'post'
+
+    try {
+
+        const { data: savedBug } = await axios[method](url, bugToSave)
+        console.log(savedBug)
+        return savedBug
+    } catch (err) {
+
+        console.log('error: ', err)
+        throw err
+    }
 }
 
-function downloadBugReportPDF() {
+async function downloadBugReportPDF() {
 
-    return axios.get('http://127.0.0.1:3030/api/bugs-report', { responseType: 'blob' })
-        .then(res => {
-            const contentType = res.headers['content-type'] || 'application/pdf'
-            const blob = new Blob([res.data], { type: contentType })
-            const blobUrl = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = blobUrl
+    try {
+        const res = await axios.get('http://127.0.0.1:3030/api/bug/report', { responseType: 'blob' })
+        const contentType = res.headers['content-type'] || 'application/pdf'
+        const blob = new Blob([res.data], { type: contentType })
+        const blobUrl = URL.createObjectURL(blob)
+        const element = document.createElement('a')
+        element.href = blobUrl
 
-            const disposition = res.headers['content-disposition'] || ''
-            const fileNameMatch = disposition.match(/filename="?([^";]+)"?/) 
-            a.download = fileNameMatch ? fileNameMatch[1] : 'bugs-report.pdf'
-            document.body.appendChild(a)
-            a.click()
-            a.remove()
+        const disposition = res.headers['content-disposition'] || ''
+        const fileNameMatch = disposition.match(/filename="?([^";]+)"?/)
+        element.download = fileNameMatch ? fileNameMatch[1] : 'bugs-report.pdf'
+        document.body.appendChild(element)
+        element.click()
+        element.remove()
 
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 1000)
-            return true
-        })
-        .catch(err => {
-            showErrorMsg('Failed to download PDF report', err)
-            throw err
-        })
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000)
+        return true
+    } catch (err) {
+        showErrorMsg('Failed to download PDF report', err)
+        throw err
+    }
 }
 
 function getDefaultFilter() {
 
-    return { txt: '', severity: '' }
+    return {
+        txt: '',
+        severity: 0,
+        labels: [],
+        sortBy: '',
+        sortDir: 1,
+        pageIdx: 0
+    }
 }
