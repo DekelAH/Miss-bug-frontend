@@ -33,6 +33,11 @@ export function BugDetails() {
         <h4>{bug.title}</h4>
         <p>Severity: <span>{bug.severity}</span></p>
         <p>Description: <span>{bug.description}</span></p>
+        <p>Labels: {
+            bug.labels.map(label => 
+                <span>{label}, </span>
+            )
+            }</p>
         <Link to="/bug">Back to List</Link>
     </div>
 

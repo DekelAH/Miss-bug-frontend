@@ -55,7 +55,7 @@ export function BugFilter({ filterBy, onSetFilterBy }) {
         setFilterByToEdit(bugService.getDefaultFilter())
     }
 
-    const allLabels = ['critical', 'need-CR', 'dev-branch', 'harmless', 'basic-injury']
+    const allLabels = ['critical', 'need-CR', 'harmless', 'basic-injury']
     const { txt, severity, labels = [], sortBy, sortDir } = filterByToEdit
 
     return (

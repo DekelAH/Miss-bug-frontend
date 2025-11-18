@@ -4,11 +4,15 @@ import { BugList } from '../cmps/BugList.jsx'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { BugFilter } from '../cmps/BugFilter.jsx'
+import { useNavigate } from 'react-router'
+import { userService } from '../services/user.service.js'
 
 
 export function BugIndex() {
     const [bugs, setBugs] = useState([])
     const [filterBy, setFilterBy] = useState(bugService.getDefaultFilter())
+    const loggedinUser = userService.getLoggedinUser()
+    const navigate = useNavigate()
 
 
     useEffect(() => {
@@ -61,21 +65,8 @@ export function BugIndex() {
     }
 
     async function onEditBug(bug) {
-        const severity = +prompt('New severity?')
-        const description = prompt('New description?')
-        const bugToSave = { ...bug, severity, description }
-        try {
 
-            const savedBug = await bugService.save(bugToSave)
-            console.log('Updated Bug:', savedBug)
-            setBugs(prevBugs => prevBugs.map((currBug) =>
-                currBug._id === savedBug._id ? savedBug : currBug
-            ))
-            showSuccessMsg('Bug updated')
-        } catch (err) {
-            console.log('Error from onEditBug ->', err)
-            showErrorMsg('Cannot update bug')
-        }
+        navigate(`/bug/edit/${bug._id}`)
     }
 
     function onSetFilterBy(filterBy) {
@@ -89,7 +80,9 @@ export function BugIndex() {
             <main>
                 <BugFilter filterBy={filterBy} onSetFilterBy={onSetFilterBy} />
                 <button onClick={onAddBug}>Add Bug ⛐</button>
-                <button onClick={onDownloadPdf}>Bugs Report 📄</button>
+                {loggedinUser?.isAdmin &&
+                    <button onClick={onDownloadPdf}>Bugs Report 📄</button>
+                }                
                 <BugList bugs={bugs} onRemoveBug={onRemoveBug} onEditBug={onEditBug} />
             </main>
         </section>

@@ -1,0 +1,37 @@
+.login-signup-container {
+
+    position: absolute;
+    top: 70px;
+    left: 15%;
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+    border: 2px solid #606b5b;
+    width: 70%;
+    margin-top: 20px;
+    border-radius: 20px;
+    background-color: var(--clr1bg);
+
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 70%;
+}
+
+label {
+    color: black;
+    display: block;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}

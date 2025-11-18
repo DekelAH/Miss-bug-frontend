@@ -1,0 +1,36 @@
+.bug-edit {
+
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+    border: 2px solid #606b5b;
+    border-radius: 20px;
+    width: 80%;
+    background-color: var(--clr1bg);
+
+    margin-top: 20px;
+}
+
+.form-edit {
+
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 80%;
+    padding: 10px;
+}
+
+label {
+    color: black;
+    display: block;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}

@@ -5,18 +5,29 @@
 }
 
 .header-container {
+    position: relative;
     display: flex;
     align-items: center;
-
 }
 
 .header-container h1 {
     flex-grow: 1;
 }
 
+.user-preview {
+    display: flex;
+    margin-left: 5px;
+    gap: 20px;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
 .app-nav {
     display: flex;
+    justify-content: center;
     gap: 15px;
+    margin-inline: 20px;
+    flex-grow: 3;
 }
 
 
@@ -24,6 +35,15 @@ a.active {
     color: rgb(241, 212, 241);
     font-weight: 600;
     text-decoration: underline;
+}
+
+.user-details {
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 
