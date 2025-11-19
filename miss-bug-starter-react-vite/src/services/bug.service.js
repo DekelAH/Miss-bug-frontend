@@ -3,12 +3,14 @@ import Axios from 'axios'
 import { showErrorMsg, showSuccessMsg } from './event-bus.service.js'
 
 // const STORAGE_KEY = 'bugDB'
-const BASE_URL = 'http://127.0.0.1:3030/api/bug/'
+const BASE_URL = (process.env.NODE_ENV !== 'development') 
+                ? 'api/bug'
+                : 'http://127.0.0.1:3030/api/bug/'
 
 const axios = Axios.create({
 
-    withCredentials: true,
-})
+        withCredentials: true,
+    })
 
 export const bugService = {
     query,
