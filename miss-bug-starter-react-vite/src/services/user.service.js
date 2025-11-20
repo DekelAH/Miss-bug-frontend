@@ -4,9 +4,9 @@ import { showErrorMsg } from './event-bus.service.js'
 
 const STORAGE_KEY_LOGGEDIN_USER = 'loggedinUser'
 
-
-const BASE_URL_USER = 'http://127.0.0.1:3030/api/user/'
-const BASE_URL_AUTH = 'http://127.0.0.1:3030/api/auth/'
+const BASE_URL = (process.env.NODE_ENV !== 'development')
+    ? 'api/'
+    : 'http://127.0.0.1:3030/api/'
 
 const axios = Axios.create({
 
@@ -30,7 +30,7 @@ export const userService = {
 async function query() {
 
     try {
-        const { data: users } = await axios.get(BASE_URL_USER)
+        const { data: users } = await axios.get(BASE_URL + 'user')
         return users
     } catch (err) {
         console.log('err: ', err)
@@ -41,14 +41,14 @@ async function query() {
 
 async function getById(userId) {
 
-    const res = await axios.get(BASE_URL_USER + userId)
+    const res = await axios.get(BASE_URL + 'user/' + userId)
     return res.data
 }
 
 async function remove(userId) {
 
     try {
-        const { data } = await axios.delete(BASE_URL_USER + userId)
+        const { data } = await axios.delete(BASE_URL + 'user/' + userId)
         return data
     } catch (err) {
         console.log(err)
@@ -58,7 +58,7 @@ async function remove(userId) {
 
 async function save(userToSave) {
 
-    const url = BASE_URL_USER + (userToSave._id || '')
+    const url = BASE_URL+ 'user/' + (userToSave._id || '')
     const method = userToSave._id ? 'put' : 'post'
 
     try {
@@ -74,7 +74,7 @@ async function save(userToSave) {
 }
 
 async function login(credentials) {
-    const { data: user } = await axios.post(BASE_URL_AUTH + 'login', credentials)
+    const { data: user } = await axios.post(BASE_URL + 'auth/login', credentials)
     console.log('user', user);
     if (user) {
         return saveLocalUser(user)
@@ -83,12 +83,12 @@ async function login(credentials) {
 
 async function signup(credentials) {
 
-    const { data: user } = await axios.post(BASE_URL_AUTH + 'signup', credentials)
+    const { data: user } = await axios.post(BASE_URL + 'auth/signup', credentials)
     return saveLocalUser(user)
 }
 
 async function logout() {
-    await axios.post(BASE_URL_AUTH + 'logout')
+    await axios.post(BASE_URL + 'auth/logout')
     sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
 }
 
