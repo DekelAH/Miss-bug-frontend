@@ -4,7 +4,7 @@ import { showErrorMsg } from './event-bus.service.js'
 
 const STORAGE_KEY_LOGGEDIN_USER = 'loggedinUser'
 
-const BASE_URL = (process.env.NODE_ENV !== 'development')
+const BASE_URL = (process.env.NODE_ENV !== 'production')
     ? 'api/'
     : 'http://127.0.0.1:3030/api/'
 
