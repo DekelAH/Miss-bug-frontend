@@ -3,7 +3,7 @@ import Axios from 'axios'
 import { showErrorMsg, showSuccessMsg } from './event-bus.service.js'
 
 // const STORAGE_KEY = 'bugDB'
-const BASE_URL = (process.env.NODE_ENV !== 'development') 
+const BASE_URL = (process.env.NODE_ENV !== 'production') 
                 ? 'api/bug'
                 : 'http://127.0.0.1:3030/api/bug/'
 
@@ -23,7 +23,7 @@ export const bugService = {
 }
 
 async function query(filterBy) {
-
+console.log(process.env.NODE_ENV)
     try {
         const { data: bugs } = await axios.get(BASE_URL, { params: filterBy })
         return bugs
